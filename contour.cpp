@@ -1,5 +1,5 @@
-#include "contour.h"
-#include "base.h"
+#include "led/contour.h"
+#include "led/base.h"
 
 int contour(const Mat src,
                 Point2f &goal,
@@ -13,16 +13,30 @@ int contour(const Mat src,
     lowExposureWAWA(src, result, goal, find_object, WAWA);
     if(find_object)
     {
-        if ( WAWA ) return 1;      //octopus
-        else return 2;                 //hippo
+        if ( WAWA )
+        {
+            cout<<"*********************octopus*********************"<<endl;
+            return 1;
+        }                  //octopus
+        else
+        {
+            return 2;
+            cout<<"*********************hippo*********************"<<endl;
+        }                 //hippo
     }
     else
     {
-        if ( WAWA ) return -1;      //closer
-        else return -2;                 //miss
+        if ( WAWA )
+        {
+             cout<<"closer"<<endl;
+            return -1;
+        }      //closer
+        else
+        {
+            cout<<"miss"<<endl;
+            return -2;
+         }//miss
     }
-
-
     return 0;
     waitKey(0);
 }

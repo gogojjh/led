@@ -47,4 +47,3 @@ void getPosition(const Point2f p1, const Point2f p2, Point2f &ans)
     ans.x=(-1) * (p2.y - p1.y);
     //cout<< ans <<endl;
 }
-

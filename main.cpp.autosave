@@ -91,5 +91,6 @@ int main()
         imshow(RESULT_WINDOW, result);
         waitKey(100);
     }
+    
     return 0;
 }
