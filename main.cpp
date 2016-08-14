@@ -1,10 +1,19 @@
-#include "led/base.h"
-#include "led/contour.h"
-#include "led/orbmatching.h"
+#include "base.h"
+#include "contour.h"
+#include "orbmatching.h"
 
 static const std::string OPENCV_WINDOW = "Image window";
 static const std::string RESULT_WINDOW = "Result window";
 int number = 0;
+
+
+bool flag_obj=0;
+bool flag_wawa=0;
+bool flag_controlstream=0;
+
+int counter_obj=0;
+int counter_wawa=0;
+
 
 int main()
 {
@@ -22,6 +31,9 @@ int main()
 
     namedWindow(OPENCV_WINDOW, 2);
     namedWindow(RESULT_WINDOW, 2);
+//    queue<short> q;
+
+
 
     while (1)
     {
@@ -36,16 +48,61 @@ int main()
             imwrite(saveFileName, frame);
         }*/
 
-        frame = imread("/home/gogojjh/QT/led/data/1116.jpg", 1);
+
+        frame = imread("/home/sd/document/graph/8_7/REGION4/g20160807_021244.524.jpg", 1);
+        frame = imread("/home/sd/document/graph/8_7/REGION4/g20160807_021252.518.jpg", 1);
+
+
         resize(frame, frame, Size(frame.cols/IMAGE_SIZE_COL, frame.rows/IMAGE_SIZE_ROW));
-        int ans1=0, ans2=0;
-        ans1 = contour(frame, goal, result);
+        int ans1=0;//ans2=0;
+
+        if (!flag_controlstream){
+            ans1 = contour(frame, goal, result);
+                switch(ans1){
+                case 1:counter_obj++;counter_wawa++;break;
+                case 2:counter_obj++;counter_wawa--;break;
+                case -1:counter_obj--;cout<<"need little more closer"<<endl;break;
+                case -2:counter_obj--;cout<<"missing target"<<endl;break;
+                default:break;
+                }
+
+                if(counter_obj>3){
+                    counter_obj=0;
+                    flag_obj=1;
+                    if(counter_wawa==10){
+                        counter_wawa=0;
+                        flag_wawa=1;
+                        cout<<"octopus"<<endl;
+
+                    }else
+                        if(counter_wawa==-10){
+                            counter_wawa=0;
+                            flag_wawa=0;
+                            cout<<"hippo"<<endl;
+                        }
+                        else{
+
+                        }
+                }
+                else if(counter_obj<-10){
+                    counter_obj=0;
+                }
+
+        }
+        else{
+            cout<<"waiting for a call"<<endl;
+            flag_obj=0;
+            flag_wawa=0;
+            /*flag_controlstream=0;*/
+        }
+
+
         //ans2 = orbmatching(frame, result);
 
-        if ((ans1 == 1) && (ans2 == 1)) cout << "octopus" << endl; else //zhangyu
-        if ((ans1 == 2) && (ans2 == 2)) cout << "hippo" << endl; else //hema
-        if (ans1 == -1) cout << "need little more colser" << endl; else
-        if (ans1 == -2) cout << "missing WAWA" << endl;
+//        if ((ans1 == 1) && (ans2 == 1)) cout << "octopus" << endl; else //zhangyu
+//        if ((ans1 == 2) && (ans2 == 2)) cout << "hippo" << endl; else //hema
+
+
 
         //undistort the images
         //Mat image_undistorted;
@@ -53,56 +110,7 @@ int main()
 
         //if (Transformer::number < 2000) continue;
 
-        /*
-        cout<<"distance:"<<distance<<endl;
-        cout<<"F1111111:::::::"<<countF1<<endl;
-        cout<<"F2222222:::::::"<<countF2<<endl;
-        int ACK=3;
-        int thresholdD=20;
 
-        if (find_object&countF1<3)    countF1++;
-        else
-        {
-            if(!find_object)
-            {
-                countF1 = 0;
-                cout<<"missing target"<<endl;
-                Transformer::gridfourdetect_threshold  = 66;
-            }
-        }
-        if (countF1 == ACK)
-        {
-            cout << "***********object_targeted**********" << endl;
-            Transformer::gridfourdetect_threshold  = 80;
-            if(distance<thresholdD)
-            {
-                countF2++;
-            }
-            else
-                countF2=0;
-            if(countF2==ACK)
-            {
-                cout<<"///////////////////I wanna drop WAWA/////////////////"<<endl;
-                countF2=0;
-                countF1=0;
-                Transformer::gridfourdetect_threshold = 66;
-            }
-            */
-            /*
-            cout << "Goal: " << goal << endl;
-            cout << "Distance: " << distance << endl;
-            cout << "Find Object: " << find_object << endl;
-            */
-            /*
-            if (Transformer::number % 1 == 0)
-            {
-                char saveFileName[50];
-                sprintf(saveFileName, "/home/gogojjh/QT/mapRecognition/image2/Origin%d.jpg", Transformer::number);
-                imwrite(saveFileName, frame);
-                sprintf(saveFileName, "/home/gogojjh/QT/mapRecognition/image2/Result%d.jpg", Transformer::number);
-                imwrite(saveFileName, trans.gImage((2)));
-            }*/
-        //}
         imshow(OPENCV_WINDOW, frame);
         if (!result.data) continue;
         imshow(RESULT_WINDOW, result);
@@ -111,19 +119,4 @@ int main()
 
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
