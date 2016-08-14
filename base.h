@@ -21,8 +21,8 @@
 #define LEFT -2
 #define RIGHT 2
 #define PI 3.14159265358979323846
-#define IMAGE_SIZE_COL 2
-#define IMAGE_SIZE_ROW 2
+#define IMAGE_SIZE_COL 5
+#define IMAGE_SIZE_ROW 5
 #define NEAR_OBJECT 50
 
 #define IMAGE_SIZE_SCALE 5
