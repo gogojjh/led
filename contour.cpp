@@ -1,7 +1,5 @@
-#include "led/contour.h"
-#include "led/base.h"
-
-
+#include "contour.h"
+#include "base.h"
 
 int contour(const Mat src,
                 Point2f &goal,
@@ -11,27 +9,21 @@ int contour(const Mat src,
 /*low exposure mode*/
     Mat dst;
     int key;
-    float minD;
     bool find_object, WAWA; //00missing 01closer 10hippo 11octopus
     lowExposureWAWA(src, result, goal, find_object, WAWA);
     if(find_object)
     {
-        if ( WAWA ) key=1;      //octopus
-        else key=2;                 //hippo
+        if ( WAWA ) return 1;      //octopus
+        else return 2;                 //hippo
     }
     else
     {
-        key=-1;
-//        if ( WAWA ) key=-1;      //closer
-//        else key=-2;                 //miss
+        if ( WAWA ) return -1;      //closer
+        else return -2;                 //miss
     }
 
-    queue<short> q;
-    q.push(key);
-    cout<q[0]<<endl;
+
     return 0;
-
-
     waitKey(0);
 }
 
@@ -46,9 +38,11 @@ void lowExposureWAWA(const Mat src, Mat &result, Point2f &goal, bool &find_objec
     /*smooth using medianBlur*/
     medianBlur(result, result,5);
 
+
     /*binary*/
-    threshold(result,result,50,255,THRESH_BINARY);
+    threshold(result,result,10,255,THRESH_BINARY);
     imshow("binary", result);
+
 
     /*morphology closing*/
     Mat element = getStructuringElement(MORPH_RECT,Size(15,15));
